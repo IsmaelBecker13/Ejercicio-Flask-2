@@ -1,0 +1,46 @@
+networks:
+  iot_old_network:
+    external: true
+    name: docker_iot-1_default
+services:
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Argentina/Buenos_Aires
+      - URL=${DOMINIO}
+      - VALIDATION=dns
+      - DNSPLUGIN=duckdns
+      - SUBDOMAINS=
+    volumes:
+      - ./swag:/config
+    ports:
+      - ${PUERTO}:443/tcp
+      - 80:80
+    restart: unless-stopped
+    networks:
+      - iot_old_network
+  ejercicio_flask_2:
+    image: crud
+    build:
+      context: ./ejercicio_flask_2
+    container_name: ejercicio_flask_2
+    environment:
+      - MYSQL_USER=${CRUD_USER}
+      - MYSQL_PASSWORD=${CRUD_PASS}
+      - MYSQL_DB=${CRUD_DB}
+      - MYSQL_HOST=${MARIADB_SERVER}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+      - SERVIDOR=${SERVIDOR}
+      - MQTT_USR=${MQTT_USR}
+      - MQTT_PASS=${MQTT_PASS}
+      - PUERTO_MQTTS=${PUERTO_MQTTS}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - iot_old_network

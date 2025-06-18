@@ -1,0 +1,7 @@
+Flask
+flask-mysqldb
+gunicorn
+aiomqtt
+certifi
+environs
+aiomysql

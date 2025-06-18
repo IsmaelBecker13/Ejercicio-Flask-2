@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Control de Nodo MQTT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://bootswatch.com/5/sandstone/bootstrap.min.css">
+
+  <!-- Mensajes flash -->
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Control de Nodo MQTT</a>
+      {% if session.get("user_id") %}
+        <div class="d-flex align-items-center">
+          <div class="nav-item pe-3">{{ session.get("user_id") }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </nav>
+</head>
+
+<body>
+  <div class="container pt-4">
+    <!-- Bloque dinámico -->
+    {% block body %}
+    <h3>Conexión a Nodo Remoto (MQTT)</h3>
+    <form method="POST" action="{{ url_for('mqtt_control') }}">
+      <div class="mb-3">
+        <label for="broker" class="form-label">Broker MQTT</label>
+        <input type="text" class="form-control" id="broker" name="broker" placeholder="ej. mqtt.eclipseprojects.io" required>
+      </div>
+      <div class="mb-3">
+        <label for="topic" class="form-label">Tópico</label>
+        <input type="text" class="form-control" id="topic" name="topic" placeholder="ej. nodo/control" required>
+      </div>
+      <div class="mb-3">
+        <label for="message" class="form-label">Comando</label>
+        <input type="text" class="form-control" id="message" name="message" placeholder="ej. ENCENDER" required>
+      </div>
+      <button type="submit" class="btn btn-success">Enviar</button>
+    </form>
+    {% endblock %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+          crossorigin="anonymous"></script>
+</body>
+</html>

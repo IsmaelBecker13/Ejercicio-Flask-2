@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-7 mx-auto">
+    <h2 class="mb-4 text-center">Control de Dispositivos Remotos</h2>
+
+    {% if ids_dispositivos %}
+        <div class="mb-4">
+        <label for="sensor_id" class="form-label">Seleccione un ID de dispositivo</label>
+        <select id="sensor_id" name="sensor_id" class="form-select" onchange="mostrarControles()" required>
+            <option value="" selected disabled style="color: gray;">
+            Selecciona uno de los Nodos Remotos registrados en la Base de Datos
+            </option>
+            {% for b in ids_dispositivos %}
+            <option value="{{ b }}">{{ b }}</option>
+            {% endfor %}
+        </select>
+        </div>
+
+
+      <div id="controlSection" class="card card-body shadow-sm" style="display:none;">
+        <h4 class="mb-3 text-center">Controlar Tópicos del dispositivo</h4>
+
+        <form id="setpointForm" method="POST" action="{{ url_for('controlar_topico') }}" class="mb-3">
+          <input type="hidden" name="selected_sensor_id" id="setpoint_id">
+          <input type="hidden" name="topico" value="setpoint">
+          <div class="mb-3">
+            <label for="setpoint_val" class="form-label">Setpoint:</label>
+            <input type="number" id="setpoint_val" name="valor" step="1" required placeholder="Ejemplo (En Grados °C): 30" class="form-control">
+          </div>
+        </form>
+
+        <form id="destelloForm" method="POST" action="{{ url_for('controlar_topico') }}">
+          <input type="hidden" name="selected_sensor_id" id="destello_id">
+          <input type="hidden" name="topico" value="destello">
+          <input type="hidden" name="valor" value="On" readonly>
+        </form>
+
+        <div class="d-flex justify-content-center gap-4">
+          <button form="setpointForm" type="submit" class="btn btn-success px-4">Enviar Setpoint</button>
+          <button form="destelloForm" type="submit" class="btn btn-success px-4">Enviar Destello</button>
+        </div>
+      </div>
+    {% else %}
+      <p class="text-center">No hay IDs de dispositivos registrados aún.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function mostrarControles() {
+  const val = document.getElementById("sensor_id").value;
+  const controls = document.getElementById("controlSection");
+  if (val) {
+    controls.style.display = "block";
+    document.getElementById("setpoint_id").value = val;
+    document.getElementById("destello_id").value = val;
+  } else {
+    controls.style.display = "none";
+  }
+}
+</script>
+{% endblock %}
